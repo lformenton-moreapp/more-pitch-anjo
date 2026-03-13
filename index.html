@@ -13,8 +13,7 @@
 <body>
 <div id="root"></div>
 <script>
-(function(){var module={exports:{}},exports=module.exports;
-/**
+(function(){var module={exports:{}},exports=module.exports;/**
  * @license React
  * scheduler.production.js
  *
@@ -354,10 +353,8 @@ exports.unstable_wrapCallback = function (callback) {
     }
   };
 };
-
 window._S=module.exports;})();
-(function(){var module={exports:{}},exports=module.exports;
-/**
+(function(){var module={exports:{}},exports=module.exports;/**
  * @license React
  * react.production.js
  *
@@ -899,11 +896,8 @@ exports.useTransition = function () {
   return ReactSharedInternals.H.useTransition();
 };
 exports.version = "19.2.4";
-
 window.React=module.exports;})();
-(function(){var module={exports:{}},exports=module.exports;
-var require=function(m){if(m==="react")return window.React;if(m==="scheduler")return window._S;return {};};
-/**
+(function(){var module={exports:{}},exports=module.exports;var require=function(m){if(m==="react")return window.React;if(m==="scheduler")return window._S;return {};};/**
  * @license React
  * react-dom.production.js
  *
@@ -1113,11 +1107,8 @@ exports.useFormStatus = function () {
   return ReactSharedInternals.H.useHostTransitionStatus();
 };
 exports.version = "19.2.4";
-
 window._RD=module.exports;})();
-(function(){var module={exports:{}},exports=module.exports;
-var require=function(m){if(m==="react")return window.React;if(m==="react-dom")return window._RD;if(m==="scheduler")return window._S;return {};};
-/**
+(function(){var module={exports:{}},exports=module.exports;var require=function(m){if(m==="react")return window.React;if(m==="react-dom")return window._RD;if(m==="scheduler")return window._S;return {};};/**
  * @license React
  * react-dom-client.production.js
  *
@@ -17166,7 +17157,6 @@ exports.hydrateRoot = function (container, initialChildren, options) {
   return new ReactDOMHydrationRoot(initialChildren);
 };
 exports.version = "19.2.4";
-
 window.ReactDOM=module.exports;})();
 </script>
 <script>
@@ -17813,13 +17803,10 @@ function PitchDeck() {
       onTouchEnd: handleTouchEnd,
       style: { width:"100vw", height:"100vh", background:"#040d1a", display:"flex", flexDirection:"column", overflow:"hidden", fontFamily:"Georgia, serif" },}
 
-      /* Main slide area — scales content to fit any screen */
+      /* Main slide area */
       , React.createElement('div', { style: { flex:1, position:"relative", overflow:"hidden" },}
-        /* Scale wrapper: keeps 16:9 proportions centered */
-        , React.createElement('div', { style: { position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" },}
-          , React.createElement(ScaledSlide, { isMobile: isMobile,}
-            , React.createElement(SlideComp, { active: true,} )
-          )
+        , React.createElement(ScaledSlide, null
+          , React.createElement(SlideComp, { active: true,} )
         )
       )
 
@@ -17869,36 +17856,43 @@ function PitchDeck() {
   );
 }
 
-function ScaledSlide({ children, isMobile }) {
+function ScaledSlide({ children }) {
   const containerRef = useRef(null);
+  const wrapperRef = useRef(null);
   const [scale, setScale] = useState(1);
+  const BASE_W = 900;
+  const BASE_H = 560;
 
   useEffect(() => {
     const update = () => {
-      if (!containerRef.current) return;
-      const parent = containerRef.current.parentElement;
-      const pw = parent.offsetWidth;
-      const ph = parent.offsetHeight;
-      const baseW = 900;
-      const baseH = 560;
-      const s = Math.min(pw / baseW, ph / baseH);
-      setScale(s);
+      if (!wrapperRef.current) return;
+      const pw = wrapperRef.current.offsetWidth;
+      const ph = wrapperRef.current.offsetHeight;
+      setScale(Math.min(pw / BASE_W, ph / BASE_H));
     };
     update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    const ro = new ResizeObserver(update);
+    if (wrapperRef.current) ro.observe(wrapperRef.current);
+    return () => ro.disconnect();
   }, []);
 
   return (
-    React.createElement('div', { ref: containerRef, style: {
-      width: 900,
-      height: 560,
-      transform: `scale(${scale})`,
-      transformOrigin: "center center",
-      position: "relative",
+    React.createElement('div', { ref: wrapperRef, style: {
+      position: "absolute", inset: 0,
+      display: "flex", alignItems: "center", justifyContent: "center",
       overflow: "hidden",
     },}
-      , children
+      , React.createElement('div', { ref: containerRef, style: {
+        width: BASE_W,
+        height: BASE_H,
+        transform: `scale(${scale})`,
+        transformOrigin: "center center",
+        flexShrink: 0,
+        position: "relative",
+        overflow: "hidden",
+      },}
+        , children
+      )
     )
   );
 }
