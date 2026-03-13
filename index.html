@@ -1,98 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MORE · Anjo Round 2026</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; background: #040d1a; }
-    #root { width: 100%; height: 100%; }
-    #loader {
-      position: fixed; inset: 0; background: #040d1a;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      z-index: 9999; transition: opacity 0.6s ease;
-    }
-    #loader.hide { opacity: 0; pointer-events: none; }
-    .loader-logo {
-      font-family: Arial Black, sans-serif;
-      font-size: 56px; font-weight: 900;
-      color: #29BAE2; letter-spacing: -2px;
-      margin-bottom: 32px;
-    }
-    .loader-bar-bg {
-      width: 200px; height: 3px;
-      background: rgba(255,255,255,0.1); border-radius: 2px;
-    }
-    .loader-bar {
-      height: 100%; width: 0%; background: #29BAE2;
-      border-radius: 2px; transition: width 0.3s ease;
-    }
-    .loader-text {
-      margin-top: 16px; font-size: 11px;
-      color: rgba(255,255,255,0.3);
-      letter-spacing: 3px; text-transform: uppercase;
-      font-family: Arial, sans-serif;
-    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body,#root{width:100%;height:100%;overflow:hidden;background:#040d1a}
+    #loader{position:fixed;inset:0;background:#040d1a;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+    #loader.fade{opacity:0;pointer-events:none}
+    .logo{font-family:"Arial Black",Arial,sans-serif;font-size:56px;font-weight:900;
+          color:#29BAE2;letter-spacing:-2px;margin-bottom:32px}
+    .dots{display:flex;gap:10px}
+    .dot{width:10px;height:10px;border-radius:50%;background:#29BAE2;
+         animation:blink 1.2s ease-in-out infinite}
+    .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+    @keyframes blink{0%,80%,100%{opacity:.15}40%{opacity:1}}
+    .sub{margin-top:20px;font-family:Arial,sans-serif;font-size:11px;
+         color:rgba(255,255,255,.25);letter-spacing:3px;text-transform:uppercase}
   </style>
 </head>
 <body>
-  <div id="loader">
-    <div class="loader-logo">more</div>
-    <div class="loader-bar-bg"><div class="loader-bar" id="bar"></div></div>
-    <div class="loader-text" id="loader-text">Carregando apresentação...</div>
-  </div>
-  <div id="root"></div>
+<div id="loader">
+  <div class="logo">more</div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="sub">Anjo Round 2026</div>
+</div>
+<div id="root"></div>
 
-  <script>
-    // Animate loader bar
-    let pct = 0;
-    const bar = document.getElementById('bar');
-    const interval = setInterval(() => {
-      pct = Math.min(pct + Math.random() * 15, 90);
-      bar.style.width = pct + '%';
-    }, 200);
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
-    function finishLoad() {
-      clearInterval(interval);
-      bar.style.width = '100%';
-      document.getElementById('loader-text').textContent = 'Pronto!';
-      setTimeout(() => {
-        document.getElementById('loader').classList.add('hide');
-        setTimeout(() => document.getElementById('loader').remove(), 700);
-      }, 300);
-    }
-  </script>
+<script>
+const {useState, useEffect, useRef} = React;
 
-  <!-- Load React first -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
-  <!-- Load Babel -->
-  <script src="https://unpkg.com/@babel/standalone@7.23.9/babel.min.js" onload="babelLoaded()"></script>
-
-  <script>
-    function babelLoaded() {
-      // Fetch and compile the JSX code after Babel is ready
-      const code = document.getElementById('app-code').textContent;
-      try {
-        const transformed = Babel.transform(code, {
-          presets: ['react'],
-          plugins: []
-        }).code;
-        const fn = new Function('React', 'ReactDOM', transformed);
-        fn(React, ReactDOM);
-        finishLoad();
-      } catch(e) {
-        console.error('Babel error:', e);
-        document.getElementById('loader-text').textContent = 'Erro: ' + e.message;
-      }
-    }
-  </script>
-
-  <!-- App code in a plain script tag (not compiled by browser) -->
-  <script id="app-code" type="text/plain">
 const slides = [
   { id: "cover", type: "cover" },
   { id: "problem", type: "problem" },
@@ -135,17 +77,14 @@ function MoreLogo({ height = 110 }) {
   const fontSize = height * 0.88;
   const C = "#29BAE2";
   return (
-    <div style={{ display:"inline-flex", alignItems:"center", lineHeight:1, gap:0 }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap');`}</style>
-      <span style={{
+    React.createElement("div", {style: { display:"inline-flex", alignItems:"center", lineHeight:1, gap:0 }}, React.createElement("style", null, `@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap');`), React.createElement("span", {style: {
         fontFamily:"'Nunito','Arial Black',sans-serif",
         fontWeight:900,
         fontSize,
         color:C,
         letterSpacing:"-1px",
         lineHeight:1,
-      }}>more</span>
-    </div>
+      }}, "more"))
   );
 }
 
@@ -153,46 +92,14 @@ function MoreLogo({ height = 110 }) {
 function Cover({ active }) {
   const v = useAnimateIn(active);
   return (
-    <div style={{ position:"relative", width:"100%", height:"100%", background:"#0a1628", overflow:"hidden", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
-      {/* Grid texture */}
-      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(30,120,220,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(30,120,220,0.07) 1px, transparent 1px)", backgroundSize:"48px 48px" }} />
-      {/* Glow */}
-      <div style={{ position:"absolute", top:"38%", left:"50%", transform:"translate(-50%,-50%)", width:700, height:700, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.15) 0%, transparent 65%)" }} />
-      <div style={{ position:"relative", zIndex:2, textAlign:"center", display:"flex", flexDirection:"column", alignItems:"center" }}>
-        {/* Real MORE logo */}
-        <div style={{ ...fade(v,0), marginBottom:40 }}>
-          <MoreLogo height={110} />
-        </div>
-        {/* Tagline */}
-        <div style={{ ...fade(v,0.15), fontSize:22, color:"rgba(255,255,255,0.7)", fontFamily:"Georgia,serif", letterSpacing:"3px", textTransform:"uppercase", marginBottom:16 }}>
-          Plataforma para a Vida
-        </div>
-        {/* Divider */}
-        <div style={{ ...fade(v,0.25), width:60, height:2, background:"rgba(30,170,255,0.5)", margin:"0 auto 16px" }} />
-        {/* Subtitle */}
-        <div style={{ ...fade(v,0.3), fontSize:15, color:"rgba(255,255,255,0.38)", fontFamily:"Georgia,serif", letterSpacing:"4px", textTransform:"uppercase" }}>
-          Moradia como Serviço · Anjo Round 2026
-        </div>
-      </div>
-      <div style={{ position:"absolute", bottom:32, left:0, right:0, textAlign:"center", ...fade(v,0.5) }}>
-        <div style={{ fontSize:11, color:"rgba(255,255,255,0.2)", letterSpacing:"3px", textTransform:"uppercase" }}>lucas.formenton@more.eco.br · more.eco.br</div>
-      </div>
-    </div>
+    React.createElement("div", {style: { position:"relative", width:"100%", height:"100%", background:"#0a1628", overflow:"hidden", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}, /* Grid texture */, React.createElement("div", {style: { position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(30,120,220,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(30,120,220,0.07) 1px, transparent 1px)", backgroundSize:"48px 48px" }}), /* Glow */, React.createElement("div", {style: { position:"absolute", top:"38%", left:"50%", transform:"translate(-50%,-50%)", width:700, height:700, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.15) 0%, transparent 65%)" }}), React.createElement("div", {style: { position:"relative", zIndex:2, textAlign:"center", display:"flex", flexDirection:"column", alignItems:"center" }}, /* Real MORE logo */, React.createElement("div", {style: { ...fade(v,0), marginBottom:40 }}, React.createElement(MoreLogo, {height: 110})), /* Tagline */, React.createElement("div", {style: { ...fade(v,0.15), fontSize:22, color:"rgba(255,255,255,0.7)", fontFamily:"Georgia,serif", letterSpacing:"3px", textTransform:"uppercase", marginBottom:16 }}, "Plataforma para a Vida"), /* Divider */, React.createElement("div", {style: { ...fade(v,0.25), width:60, height:2, background:"rgba(30,170,255,0.5)", margin:"0 auto 16px" }}), /* Subtitle */, React.createElement("div", {style: { ...fade(v,0.3), fontSize:15, color:"rgba(255,255,255,0.38)", fontFamily:"Georgia,serif", letterSpacing:"4px", textTransform:"uppercase" }}, "Moradia como Serviço · Anjo Round 2026")), React.createElement("div", {style: { position:"absolute", bottom:32, left:0, right:0, textAlign:"center", ...fade(v,0.5) }}, React.createElement("div", {style: { fontSize:11, color:"rgba(255,255,255,0.2)", letterSpacing:"3px", textTransform:"uppercase" }}, "lucas.formenton@more.eco.br · more.eco.br")))
   );
 }
 
 function Problem({ active }) {
   const v = useAnimateIn(active);
   return (
-    <div style={{ width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ position:"absolute", top:-80, right:-80, width:400, height:400, borderRadius:"50%", background:"radial-gradient(circle, rgba(255,80,60,0.08) 0%, transparent 70%)" }} />
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:20, fontFamily:"Georgia,serif" }}>O Problema</div>
-      <div style={{ ...fade(v,0.1), fontSize:42, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.15, marginBottom:40, maxWidth:700 }}>
-        O mercado habitacional trata moradia como produto,<br/>
-        <span style={{ color:"#1EAAFF" }}>não como serviço.</span>
-      </div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:24, maxWidth:860 }}>
-        {[
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { position:"absolute", top:-80, right:-80, width:400, height:400, borderRadius:"50%", background:"radial-gradient(circle, rgba(255,80,60,0.08) 0%, transparent 70%)" }}), React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:20, fontFamily:"Georgia,serif" }}, "O Problema"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:42, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.15, marginBottom:40, maxWidth:700 }}, "O mercado habitacional trata moradia como produto,", React.createElement("br", null), React.createElement("span", {style: { color:"#1EAAFF" }}, "não como serviço.")), React.createElement("div", {style: { display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:24, maxWidth:860 }}, [
           ["6 MM","Famílias no déficit habitacional brasileiro","(Fundação João Pinheiro, 2023)"],
           ["200 mil","Unidades retomadas pela CEF em leilão","por inadimplência em 2024"],
           ["Crédito → Chaves → Fim","O modelo atual encerra o relacionamento na entrega das chaves","Ninguém opera o que acontece depois"],
@@ -202,9 +109,7 @@ function Problem({ active }) {
             <div style={{ fontSize:15, color:"rgba(255,255,255,0.8)", lineHeight:1.5, marginBottom:8 }}>{t}</div>
             <div style={{ fontSize:12, color:"rgba(255,255,255,0.35)" }}>{s}</div>
           </div>
-        ))}
-      </div>
-    </div>
+        ))))
   );
 }
 
@@ -212,43 +117,21 @@ function Funnel({ active }) {
   const v = useAnimateIn(active);
   const steps = ["Sonho da Casa Própria","Nome Limpo","Renda Comprovada","Poupança para Entrada","+ R$ 5.000 de Renda","Aprovação do Crédito"];
   return (
-    <div style={{ width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", padding:"40px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(30,120,220,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(30,120,220,0.05) 1px, transparent 1px)", backgroundSize:"40px 40px" }} />
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:16, fontFamily:"Georgia,serif" }}>O Filtro Excludente</div>
-      <div style={{ ...fade(v,0.08), fontSize:34, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", marginBottom:40, textAlign:"center" }}>
-        Milhões de famílias entram, <span style={{ color:"#1EAAFF" }}>pouquíssimas passam.</span>
-      </div>
-      <div style={{ position:"relative", display:"flex", flexDirection:"column", alignItems:"center", gap:0, zIndex:2 }}>
-        {steps.map((s, i) => {
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", padding:"40px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(30,120,220,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(30,120,220,0.05) 1px, transparent 1px)", backgroundSize:"40px 40px" }}), React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:16, fontFamily:"Georgia,serif" }}, "O Filtro Excludente"), React.createElement("div", {style: { ...fade(v,0.08), fontSize:34, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", marginBottom:40, textAlign:"center" }}, "Milhões de famílias entram,", React.createElement("span", {style: { color:"#1EAAFF" }}, "pouquíssimas passam.")), React.createElement("div", {style: { position:"relative", display:"flex", flexDirection:"column", alignItems:"center", gap:0, zIndex:2 }}, steps.map((s, i) => {
           const w = 480 - i * 62;
           const isLast = i === steps.length - 1;
-          return (
-            <div key={i} style={{ ...fade(v, 0.15 + i*0.1), width:w, background: isLast ? "rgba(30,170,255,0.18)" : "rgba(255,107,74,0.1)", border:`1px solid ${isLast ? "rgba(30,170,255,0.35)" : "rgba(255,107,74,0.2)"}`, borderRadius: i === 0 ? "12px 12px 0 0" : i === steps.length-1 ? "0 0 12px 12px" : 0, padding:"12px 20px", textAlign:"center", color: isLast ? "#1EAAFF" : "rgba(255,255,255,0.75)", fontSize: isLast ? 14 : 13, fontWeight: isLast ? 700 : 500, transition:"all 0.6s ease" }}>
-              {s}
-              {isLast && <span style={{ marginLeft:8, fontSize:18 }}>↓</span>}
-            </div>
+          return React.createElement("div", {key: i, style: { ...fade(v, 0.15 + i*0.1), width:w, background: isLast ? "rgba(30,170,255,0.18)" : "rgba(255,107,74,0.1)", border:`1px solid ${isLast ? "rgba(30,170,255,0.35)" : "rgba(255,107,74,0.2)"}`, borderRadius: i === 0 ? "12px 12px 0 0" : i === steps.length-1 ? "0 0 12px 12px" : 0, padding:"12px 20px", textAlign:"center", color: isLast ? "#1EAAFF" : "rgba(255,255,255,0.75)", fontSize: isLast ? 14 : 13, fontWeight: isLast ? 700 : 500, transition:"all 0.6s ease" }},
+              s,
+              isLast && React.createElement("span", {style: { marginLeft:8, fontSize:18 }}, "↓")
           );
-        })}
-        <div style={{ ...fade(v,0.85), marginTop:12, fontSize:13, color:"rgba(255,255,255,0.4)", fontStyle:"italic" }}>A maioria fica de fora do sistema</div>
-      </div>
-    </div>
+        }), React.createElement("div", {style: { ...fade(v,0.85), marginTop:12, fontSize:13, color:"rgba(255,255,255,0.4)", fontStyle:"italic" }}, "A maioria fica de fora do sistema")))
   );
 }
 
 function Solution({ active }) {
   const v = useAnimateIn(active);
   return (
-    <div style={{ width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:700, height:700, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.07) 0%, transparent 65%)" }} />
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#1EAAFF", marginBottom:16, fontFamily:"Georgia,serif" }}>A Solução</div>
-      <div style={{ ...fade(v,0.1), fontSize:38, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:12, maxWidth:680 }}>
-        Empreendimentos habitacionais<br/><span style={{ color:"#1EAAFF" }}>operados como serviço.</span>
-      </div>
-      <div style={{ ...fade(v,0.18), fontSize:17, color:"rgba(255,255,255,0.5)", marginBottom:48, maxWidth:560, lineHeight:1.7 }}>
-        A MORE não encerra a relação nas chaves. Ela começa aí.
-      </div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:20, maxWidth:900 }}>
-        {[
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:700, height:700, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.07) 0%, transparent 65%)" }}), React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#1EAAFF", marginBottom:16, fontFamily:"Georgia,serif" }}, "A Solução"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:38, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:12, maxWidth:680 }}, "Empreendimentos habitacionais", React.createElement("br", null), React.createElement("span", {style: { color:"#1EAAFF" }}, "operados como serviço.")), React.createElement("div", {style: { ...fade(v,0.18), fontSize:17, color:"rgba(255,255,255,0.5)", marginBottom:48, maxWidth:560, lineHeight:1.7 }}, "A MORE não encerra a relação nas chaves. Ela começa aí."), React.createElement("div", {style: { display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:20, maxWidth:900 }}, [
           { icon:"🏗️", title:"Hardware", color:"#1EAAFF", desc:"Empreendimentos projetados para operação contínua, com construção industrializada para escala, velocidade e eficiência." },
           { icon:"📱", title:"Software", color:"#F5C518", desc:"App MORE: jornada do morador do cadastro ao pós-ocupação. Gestão condominial, crédito, serviços e comunidade em uma plataforma." },
           { icon:"⚙️", title:"Operação", color:"#4AE6A4", desc:"Gestão profissional orientada por dados. Manutenção, disciplina financeira, serviços e desenvolvimento humano ao longo do tempo." },
@@ -259,9 +142,7 @@ function Solution({ active }) {
             <div style={{ fontSize:20, fontWeight:800, color, fontFamily:"Georgia,serif", marginBottom:12 }}>{title}</div>
             <div style={{ fontSize:14, color:"rgba(255,255,255,0.6)", lineHeight:1.65 }}>{desc}</div>
           </div>
-        ))}
-      </div>
-    </div>
+        ))))
   );
 }
 
@@ -277,35 +158,18 @@ function Model({ active }) {
     { label:"Assinaturas Digitais", category:"Software", color:"#F5C518" },
   ];
   return (
-    <div style={{ width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"50px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#4AE6A4", marginBottom:16, fontFamily:"Georgia,serif" }}>Modelo de Negócio</div>
-      <div style={{ ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", marginBottom:8 }}>
-        Múltiplas fontes de receita. <span style={{ color:"#4AE6A4" }}>Todas recorrentes.</span>
-      </div>
-      <div style={{ ...fade(v,0.18), fontSize:16, color:"rgba(255,255,255,0.45)", marginBottom:36 }}>O modelo não depende exclusivamente de ciclos de venda.</div>
-      <div style={{ display:"flex", gap:40, alignItems:"flex-start" }}>
-        <div style={{ flex:1 }}>
-          {revenues.map((r, i) => (
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"50px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#4AE6A4", marginBottom:16, fontFamily:"Georgia,serif" }}, "Modelo de Negócio"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", marginBottom:8 }}, "Múltiplas fontes de receita.", React.createElement("span", {style: { color:"#4AE6A4" }}, "Todas recorrentes.")), React.createElement("div", {style: { ...fade(v,0.18), fontSize:16, color:"rgba(255,255,255,0.45)", marginBottom:36 }}, "O modelo não depende exclusivamente de ciclos de venda."), React.createElement("div", {style: { display:"flex", gap:40, alignItems:"flex-start" }}, React.createElement("div", {style: { flex:1 }}, revenues.map((r, i) => (
             <div key={i} style={{ ...fade(v, 0.25 + i*0.08), display:"flex", alignItems:"center", gap:12, marginBottom:14 }}>
               <div style={{ width:6, height:6, borderRadius:"50%", background:r.color, flexShrink:0 }} />
               <div style={{ flex:1, fontSize:15, color:"rgba(255,255,255,0.8)" }}>{r.label}</div>
               <div style={{ fontSize:11, color:r.color, background:`${r.color}18`, padding:"3px 10px", borderRadius:20, letterSpacing:"1px" }}>{r.category}</div>
             </div>
-          ))}
-        </div>
-        <div style={{ width:280 }}>
-          <div style={{ ...fade(v,0.3), background:"rgba(255,255,255,0.04)", borderRadius:20, padding:28, border:"1px solid rgba(255,255,255,0.08)" }}>
-            <div style={{ fontSize:13, color:"rgba(255,255,255,0.4)", letterSpacing:"2px", textTransform:"uppercase", marginBottom:20 }}>Projeção 10 Anos</div>
-            {[["5.400","Unidades lançadas"],["R$ 1,4 BI","VGV estimado"],["680","Unidades próprias"],["R$ 25 MM","ARR anual recorrente"],["R$ 180 MM","Ativos reais"]].map(([n,l],i) => (
+          ))), React.createElement("div", {style: { width:280 }}, React.createElement("div", {style: { ...fade(v,0.3), background:"rgba(255,255,255,0.04)", borderRadius:20, padding:28, border:"1px solid rgba(255,255,255,0.08)" }}, React.createElement("div", {style: { fontSize:13, color:"rgba(255,255,255,0.4)", letterSpacing:"2px", textTransform:"uppercase", marginBottom:20 }}, "Projeção 10 Anos"), [["5.400","Unidades lançadas"],["R$ 1,4 BI","VGV estimado"],["680","Unidades próprias"],["R$ 25 MM","ARR anual recorrente"],["R$ 180 MM","Ativos reais"]].map(([n,l],i) => (
               <div key={i} style={{ marginBottom:16 }}>
                 <div style={{ fontSize:22, fontWeight:800, color:"#1EAAFF", fontFamily:"Georgia,serif" }}>{n}</div>
                 <div style={{ fontSize:12, color:"rgba(255,255,255,0.4)" }}>{l}</div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
+            ))))))
   );
 }
 
@@ -317,37 +181,20 @@ function Access({ active }) {
     { title:"Compra Tradicional", icon:"📋", color:"#4AE6A4", desc:"MCMV / CEF / Financiamento bancário convencional para quem já tem perfil de crédito aprovado." },
   ];
   return (
-    <div style={{ width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:16, fontFamily:"Georgia,serif" }}>Formas de Acesso</div>
-      <div style={{ ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:12 }}>
-        Cada família entra pela porta<br/><span style={{ color:"#F5C518" }}>certa para seu momento de vida.</span>
-      </div>
-      <div style={{ ...fade(v,0.18), fontSize:16, color:"rgba(255,255,255,0.45)", marginBottom:48 }}>O crédito não é filtro de entrada — é uma das opções.</div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:24 }}>
-        {doors.map(({ title, icon, color, desc }, i) => (
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:16, fontFamily:"Georgia,serif" }}, "Formas de Acesso"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:12 }}, "Cada família entra pela porta", React.createElement("br", null), React.createElement("span", {style: { color:"#F5C518" }}, "certa para seu momento de vida.")), React.createElement("div", {style: { ...fade(v,0.18), fontSize:16, color:"rgba(255,255,255,0.45)", marginBottom:48 }}, "O crédito não é filtro de entrada — é uma das opções."), React.createElement("div", {style: { display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:24 }}, doors.map(({ title, icon, color, desc }, i) => (
           <div key={i} style={{ ...fade(v, 0.28 + i*0.13), background:"rgba(255,255,255,0.04)", borderRadius:20, padding:"36px 28px", border:`1px solid ${color}30`, textAlign:"center" }}>
             <div style={{ fontSize:40, marginBottom:16 }}>{icon}</div>
             <div style={{ fontSize:17, fontWeight:800, color, fontFamily:"Georgia,serif", marginBottom:16 }}>{title}</div>
             <div style={{ fontSize:14, color:"rgba(255,255,255,0.6)", lineHeight:1.65 }}>{desc}</div>
           </div>
-        ))}
-      </div>
-    </div>
+        ))))
   );
 }
 
 function Market({ active }) {
   const v = useAnimateIn(active);
   return (
-    <div style={{ width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ position:"absolute", bottom:-100, right:-100, width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.08) 0%, transparent 65%)" }} />
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#1EAAFF", marginBottom:16, fontFamily:"Georgia,serif" }}>Tamanho de Mercado</div>
-      <div style={{ ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", marginBottom:48 }}>
-        Um mercado enorme, <span style={{ color:"#1EAAFF" }}>profundamente desservido.</span>
-      </div>
-      <div style={{ display:"flex", gap:32, alignItems:"center" }}>
-        <div style={{ flex:1, display:"flex", flexDirection:"column", gap:20 }}>
-          {[
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { position:"absolute", bottom:-100, right:-100, width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.08) 0%, transparent 65%)" }}), React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#1EAAFF", marginBottom:16, fontFamily:"Georgia,serif" }}, "Tamanho de Mercado"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", marginBottom:48 }}, "Um mercado enorme,", React.createElement("span", {style: { color:"#1EAAFF" }}, "profundamente desservido.")), React.createElement("div", {style: { display:"flex", gap:32, alignItems:"center" }}, React.createElement("div", {style: { flex:1, display:"flex", flexDirection:"column", gap:20 }}, [
             { label:"TAM", value:"6 MM famílias", sub:"Déficit habitacional urbano brasileiro", color:"#1EAAFF", w:"100%" },
             { label:"SAM", value:"1,5 MM famílias", sub:"Renda familiar > R$ 3.036 — habitação popular operável como serviço", color:"#4AE6A4", w:"60%" },
             { label:"SOM (10 anos)", value:"5.400 unidades", sub:"0,4% do SAM — crescimento deliberado e consistente", color:"#F5C518", w:"28%" },
@@ -362,14 +209,7 @@ function Market({ active }) {
               </div>
               <div style={{ fontSize:13, color:"rgba(255,255,255,0.4)" }}>{sub}</div>
             </div>
-          ))}
-        </div>
-        <div style={{ width:220, ...fade(v,0.5), background:"rgba(255,255,255,0.04)", borderRadius:20, padding:28, border:"1px solid rgba(255,255,255,0.08)", textAlign:"center" }}>
-          <div style={{ fontSize:48, fontWeight:900, color:"#1EAAFF", fontFamily:"Georgia,serif", lineHeight:1 }}>6MM</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.4)", marginTop:8, lineHeight:1.5 }}>unidades no déficit habitacional<br/>(João Pinheiro, 2023)</div>
-        </div>
-      </div>
-    </div>
+          ))), React.createElement("div", {style: { width:220, ...fade(v,0.5), background:"rgba(255,255,255,0.04)", borderRadius:20, padding:28, border:"1px solid rgba(255,255,255,0.08)", textAlign:"center" }}, React.createElement("div", {style: { fontSize:48, fontWeight:900, color:"#1EAAFF", fontFamily:"Georgia,serif", lineHeight:1 }}, "6MM"), React.createElement("div", {style: { fontSize:13, color:"rgba(255,255,255,0.4)", marginTop:8, lineHeight:1.5 }}, "unidades no déficit habitacional", React.createElement("br", null), "(João Pinheiro, 2023)"))))
   );
 }
 
@@ -377,24 +217,12 @@ function Tech({ active }) {
   const v = useAnimateIn(active);
   const features = ["Jornada do cliente ponta a ponta","Acesso ao crédito com múltiplas modalidades","Gestão condominial em tempo real","Redução de inadimplência por dados","Serviços e vida comunitária integrados","Evolução para bancarização do morador"];
   return (
-    <div style={{ width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ position:"absolute", top:"50%", left:"55%", transform:"translate(-50%,-50%)", width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.1) 0%, transparent 65%)" }} />
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#1EAAFF", marginBottom:16, fontFamily:"Georgia,serif" }}>Tecnologia & Inovação</div>
-      <div style={{ ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:12 }}>
-        O software MORE é o sistema<br/><span style={{ color:"#1EAAFF" }}>nervoso do ecossistema.</span>
-      </div>
-      <div style={{ ...fade(v,0.18), fontSize:16, color:"rgba(255,255,255,0.45)", marginBottom:40, maxWidth:560 }}>
-        Não é um produto isolado. É infraestrutura operacional viva que aprende com o uso real.
-      </div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14, maxWidth:720 }}>
-        {features.map((f, i) => (
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { position:"absolute", top:"50%", left:"55%", transform:"translate(-50%,-50%)", width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.1) 0%, transparent 65%)" }}), React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#1EAAFF", marginBottom:16, fontFamily:"Georgia,serif" }}, "Tecnologia & Inovação"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:12 }}, "O software MORE é o sistema", React.createElement("br", null), React.createElement("span", {style: { color:"#1EAAFF" }}, "nervoso do ecossistema.")), React.createElement("div", {style: { ...fade(v,0.18), fontSize:16, color:"rgba(255,255,255,0.45)", marginBottom:40, maxWidth:560 }}, "Não é um produto isolado. É infraestrutura operacional viva que aprende com o uso real."), React.createElement("div", {style: { display:"grid", gridTemplateColumns:"1fr 1fr", gap:14, maxWidth:720 }}, features.map((f, i) => (
           <div key={i} style={{ ...fade(v, 0.28 + i*0.08), display:"flex", alignItems:"center", gap:12, background:"rgba(30,170,255,0.06)", borderRadius:12, padding:"14px 18px", border:"1px solid rgba(30,170,255,0.12)" }}>
             <div style={{ width:6, height:6, borderRadius:"50%", background:"#1EAAFF", flexShrink:0 }} />
             <div style={{ fontSize:14, color:"rgba(255,255,255,0.8)" }}>{f}</div>
           </div>
-        ))}
-      </div>
-    </div>
+        ))))
   );
 }
 
@@ -409,24 +237,13 @@ function Industrial({ active }) {
     { icon:"📐", label:"Padrão", desc:"Previsibilidade técnica e financeira" },
   ];
   return (
-    <div style={{ width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#4AE6A4", marginBottom:16, fontFamily:"Georgia,serif" }}>Inovação Construtiva</div>
-      <div style={{ ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:12 }}>
-        Acompanhamos a evolução do<br/><span style={{ color:"#4AE6A4" }}>mercado desde o primeiro dia.</span>
-      </div>
-      <div style={{ ...fade(v,0.18), fontSize:16, color:"rgba(255,255,255,0.45)", marginBottom:40, maxWidth:620, lineHeight:1.65 }}>
-        A MORE nasce orientada às melhores práticas construtivas disponíveis — e evolui com elas. Adotamos tecnologia quando ela melhora o sistema como um todo: eficiência, escala, previsibilidade e elegibilidade a capital climático.
-      </div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:20, maxWidth:860 }}>
-        {benefits.map(({ icon, label, desc }, i) => (
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#4AE6A4", marginBottom:16, fontFamily:"Georgia,serif" }}, "Inovação Construtiva"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:12 }}, "Acompanhamos a evolução do", React.createElement("br", null), React.createElement("span", {style: { color:"#4AE6A4" }}, "mercado desde o primeiro dia.")), React.createElement("div", {style: { ...fade(v,0.18), fontSize:16, color:"rgba(255,255,255,0.45)", marginBottom:40, maxWidth:620, lineHeight:1.65 }}, "A MORE nasce orientada às melhores práticas construtivas disponíveis — e evolui com elas. Adotamos tecnologia quando ela melhora o sistema como um todo: eficiência, escala, previsibilidade e elegibilidade a capital climático."), React.createElement("div", {style: { display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:20, maxWidth:860 }}, benefits.map(({ icon, label, desc }, i) => (
           <div key={i} style={{ ...fade(v, 0.28 + i*0.08), background:"rgba(74,230,164,0.05)", borderRadius:16, padding:"24px 20px", border:"1px solid rgba(74,230,164,0.12)" }}>
             <div style={{ fontSize:24, marginBottom:8 }}>{icon}</div>
             <div style={{ fontSize:22, fontWeight:800, color:"#4AE6A4", fontFamily:"Georgia,serif", marginBottom:6 }}>{label}</div>
             <div style={{ fontSize:13, color:"rgba(255,255,255,0.6)" }}>{desc}</div>
           </div>
-        ))}
-      </div>
-    </div>
+        ))))
   );
 }
 
@@ -440,47 +257,24 @@ function Impact({ active }) {
   ];
   const impacts = ["Inclusão financeira progressiva do morador","Ampliação do acesso à moradia adequada","Redução do período aluguel + financiamento","Estabilidade emocional e planejamento familiar","Educação contínua, esporte e empreendedorismo","Geração de ativos financeiros estruturados"];
   return (
-    <div style={{ width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#4AE6A4", marginBottom:16, fontFamily:"Georgia,serif" }}>Impacto Social & ESG</div>
-      <div style={{ ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:32 }}>
-        Retorno financeiro e<br/><span style={{ color:"#4AE6A4" }}>desenvolvimento humano real.</span>
-      </div>
-      <div style={{ display:"flex", gap:48 }}>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.35)", letterSpacing:"2px", textTransform:"uppercase", marginBottom:20 }}>Impacto Direto</div>
-          {impacts.map((item, i) => (
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#4AE6A4", marginBottom:16, fontFamily:"Georgia,serif" }}, "Impacto Social & ESG"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:32 }}, "Retorno financeiro e", React.createElement("br", null), React.createElement("span", {style: { color:"#4AE6A4" }}, "desenvolvimento humano real.")), React.createElement("div", {style: { display:"flex", gap:48 }}, React.createElement("div", {style: { flex:1 }}, React.createElement("div", {style: { fontSize:13, color:"rgba(255,255,255,0.35)", letterSpacing:"2px", textTransform:"uppercase", marginBottom:20 }}, "Impacto Direto"), impacts.map((item, i) => (
             <div key={i} style={{ ...fade(v, 0.2 + i*0.08), display:"flex", alignItems:"center", gap:12, marginBottom:14 }}>
               <div style={{ width:6, height:6, borderRadius:"50%", background:"#4AE6A4", flexShrink:0 }} />
               <div style={{ fontSize:14, color:"rgba(255,255,255,0.75)" }}>{item}</div>
             </div>
-          ))}
-        </div>
-        <div style={{ width:240 }}>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.35)", letterSpacing:"2px", textTransform:"uppercase", marginBottom:20 }}>ODS Alinhados</div>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-            {ods.map(({ num, label, color }, i) => (
+          ))), React.createElement("div", {style: { width:240 }}, React.createElement("div", {style: { fontSize:13, color:"rgba(255,255,255,0.35)", letterSpacing:"2px", textTransform:"uppercase", marginBottom:20 }}, "ODS Alinhados"), React.createElement("div", {style: { display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}, ods.map(({ num, label, color }, i) => (
               <div key={i} style={{ ...fade(v, 0.35 + i*0.1), background:`${color}18`, border:`1px solid ${color}40`, borderRadius:12, padding:"16px 12px", textAlign:"center" }}>
                 <div style={{ fontSize:24, fontWeight:900, color, fontFamily:"Georgia,serif" }}>{num}</div>
                 <div style={{ fontSize:10, color:"rgba(255,255,255,0.5)", marginTop:4, lineHeight:1.4 }}>{label}</div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
+            ))))))
   );
 }
 
 function Partners({ active }) {
   const v = useAnimateIn(active);
   return (
-    <div style={{ width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:16, fontFamily:"Georgia,serif" }}>Parcerias Estratégicas</div>
-      <div style={{ ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:40 }}>
-        Parceiros que reduzem risco<br/><span style={{ color:"#F5C518" }}>desde o primeiro empreendimento.</span>
-      </div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:28, maxWidth:860 }}>
-        {[
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#0d1b2e", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:16, fontFamily:"Georgia,serif" }}, "Parcerias Estratégicas"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:40 }}, "Parceiros que reduzem risco", React.createElement("br", null), React.createElement("span", {style: { color:"#F5C518" }}, "desde o primeiro empreendimento.")), React.createElement("div", {style: { display:"grid", gridTemplateColumns:"1fr 1fr", gap:28, maxWidth:860 }}, [
           { name:"TAP Construtora", tag:"Co-incorporadora", color:"#1EAAFF", bullets:["15 anos de história","+ 3.000 unidades entregues","Expertise residencial e comercial","R$ 400 MM de GERIC disponível","Co-incorporadora nos 4 primeiros empreendimentos"] },
           { name:"São Roque Supermercados", tag:"Terrenista âncora", color:"#F5C518", bullets:["50 anos de história","R$ 1,2 BI de faturamento (2025)","+3.000 colaboradores no interior de SP","Terrenista do primeiro empreendimento","Demanda de moradia por colaboradores locais"] },
         ].map(({ name, tag, color, bullets }, i) => (
@@ -499,9 +293,7 @@ function Partners({ active }) {
               </div>
             ))}
           </div>
-        ))}
-      </div>
-    </div>
+        ))))
   );
 }
 
@@ -520,14 +312,7 @@ function Financials({ active }) {
     { label:"Pessoas", pct:23, color:"#B06AFF" },
   ];
   return (
-    <div style={{ width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"50px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#1EAAFF", marginBottom:16, fontFamily:"Georgia,serif" }}>Uso do Capital</div>
-      <div style={{ ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:36 }}>
-        R$ 300K em 3 meses<br/><span style={{ color:"#1EAAFF" }}>atrelados a entregas reais.</span>
-      </div>
-      <div style={{ display:"flex", gap:40 }}>
-        <div style={{ flex:1 }}>
-          {tranches.map(({ label, desc, prazo, valor }, i) => (
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"50px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#1EAAFF", marginBottom:16, fontFamily:"Georgia,serif" }}, "Uso do Capital"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", lineHeight:1.2, marginBottom:36 }}, "R$ 300K em 3 meses", React.createElement("br", null), React.createElement("span", {style: { color:"#1EAAFF" }}, "atrelados a entregas reais.")), React.createElement("div", {style: { display:"flex", gap:40 }}, React.createElement("div", {style: { flex:1 }}, tranches.map(({ label, desc, prazo, valor }, i) => (
             <div key={i} style={{ ...fade(v, 0.22 + i*0.12), display:"flex", gap:16, marginBottom:20, alignItems:"flex-start" }}>
               <div style={{ width:36, height:36, borderRadius:10, background:"rgba(30,170,255,0.15)", border:"1px solid rgba(30,170,255,0.3)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:800, color:"#1EAAFF", flexShrink:0 }}>{label}</div>
               <div style={{ flex:1 }}>
@@ -538,15 +323,7 @@ function Financials({ active }) {
                 </div>
               </div>
             </div>
-          ))}
-          <div style={{ ...fade(v,0.5), marginTop:8, background:"rgba(30,170,255,0.08)", borderRadius:12, padding:"14px 20px", border:"1px solid rgba(30,170,255,0.2)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <span style={{ fontSize:14, color:"rgba(255,255,255,0.6)" }}>Total — 3 meses</span>
-            <span style={{ fontSize:20, fontWeight:800, color:"#1EAAFF", fontFamily:"Georgia,serif" }}>R$ 300K</span>
-          </div>
-        </div>
-        <div style={{ width:240, ...fade(v,0.4) }}>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.35)", letterSpacing:"2px", textTransform:"uppercase", marginBottom:20 }}>Alocação</div>
-          {alloc.map(({ label, pct, color }, i) => (
+          )), React.createElement("div", {style: { ...fade(v,0.5), marginTop:8, background:"rgba(30,170,255,0.08)", borderRadius:12, padding:"14px 20px", border:"1px solid rgba(30,170,255,0.2)", display:"flex", justifyContent:"space-between", alignItems:"center" }}, React.createElement("span", {style: { fontSize:14, color:"rgba(255,255,255,0.6)" }}, "Total — 3 meses"), React.createElement("span", {style: { fontSize:20, fontWeight:800, color:"#1EAAFF", fontFamily:"Georgia,serif" }}, "R$ 300K"))), React.createElement("div", {style: { width:240, ...fade(v,0.4) }}, React.createElement("div", {style: { fontSize:13, color:"rgba(255,255,255,0.35)", letterSpacing:"2px", textTransform:"uppercase", marginBottom:20 }}, "Alocação"), alloc.map(({ label, pct, color }, i) => (
             <div key={i} style={{ marginBottom:14 }}>
               <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
                 <span style={{ fontSize:13, color:"rgba(255,255,255,0.7)" }}>{label}</span>
@@ -556,24 +333,14 @@ function Financials({ active }) {
                 <div style={{ height:"100%", width:`${pct}%`, background:color, borderRadius:3 }} />
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
+          )))))
   );
 }
 
 function Investment({ active }) {
   const v = useAnimateIn(active);
   return (
-    <div style={{ width:"100%", height:"100%", background:"#0a1628", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:700, height:700, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.1) 0%, transparent 65%)" }} />
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:16, fontFamily:"Georgia,serif", textAlign:"center" }}>Proposta de Investimento</div>
-      <div style={{ ...fade(v,0.1), fontSize:38, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", textAlign:"center", marginBottom:48, lineHeight:1.2 }}>
-        Captação <span style={{ color:"#F5C518" }}>Anjo Round 2026</span>
-      </div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:20, maxWidth:900, width:"100%" }}>
-        {[
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#0a1628", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:700, height:700, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.1) 0%, transparent 65%)" }}), React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#F5C518", marginBottom:16, fontFamily:"Georgia,serif", textAlign:"center" }}, "Proposta de Investimento"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:38, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", textAlign:"center", marginBottom:48, lineHeight:1.2 }}, "Captação", React.createElement("span", {style: { color:"#F5C518" }}, "Anjo Round 2026")), React.createElement("div", {style: { display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:20, maxWidth:900, width:"100%" }}, [
           { label:"Valuation de Entrada", value:"R$ 15 MM", color:"#1EAAFF" },
           { label:"Captação Anjo", value:"R$ 300K", color:"#F5C518" },
           { label:"Participação", value:"2%", color:"#4AE6A4" },
@@ -583,17 +350,12 @@ function Investment({ active }) {
             <div style={{ fontSize:28, fontWeight:900, color, fontFamily:"Georgia,serif", marginBottom:10 }}>{value}</div>
             <div style={{ fontSize:12, color:"rgba(255,255,255,0.4)", textTransform:"uppercase", letterSpacing:"1.5px" }}>{label}</div>
           </div>
-        ))}
-      </div>
-      <div style={{ ...fade(v,0.6), marginTop:32, display:"flex", gap:48, justifyContent:"center" }}>
-        {[["R$ 289,9 MM","Valuation projetado 2035"],["R$ 5,8 MM","Valor da participação em 2035"]].map(([v2,l]) => (
+        ))), React.createElement("div", {style: { ...fade(v,0.6), marginTop:32, display:"flex", gap:48, justifyContent:"center" }}, [["R$ 289,9 MM","Valuation projetado 2035"],["R$ 5,8 MM","Valor da participação em 2035"]].map(([v2,l]) => (
           <div key={l} style={{ textAlign:"center" }}>
             <div style={{ fontSize:22, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif" }}>{v2}</div>
             <div style={{ fontSize:12, color:"rgba(255,255,255,0.35)", marginTop:4 }}>{l}</div>
           </div>
-        ))}
-      </div>
-    </div>
+        ))))
   );
 }
 
@@ -606,13 +368,7 @@ function Team({ active }) {
     { name:"Ariane Mayer", role:"Conselheira", desc:"CEO da Autêntica Ecossistemas Sustentáveis. 20+ anos em negócios sustentáveis. Mestranda em Eng. Ambiental UFPR. Green Economy Equity Group.", contact:"", color:"#4AE6A4" },
   ];
   return (
-    <div style={{ width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}>
-      <div style={{ ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#4AE6A4", marginBottom:16, fontFamily:"Georgia,serif" }}>Time</div>
-      <div style={{ ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", marginBottom:40 }}>
-        Experiência real.<br/><span style={{ color:"#4AE6A4" }}>Redes que viabilizam.</span>
-      </div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:24, marginBottom:32 }}>
-        {members.map(({ name, role, desc, contact, color }, i) => (
+    React.createElement("div", {style: { width:"100%", height:"100%", background:"#061122", display:"flex", flexDirection:"column", justifyContent:"center", padding:"60px 80px", position:"relative", overflow:"hidden" }}, React.createElement("div", {style: { ...fade(v,0), fontSize:11, letterSpacing:"4px", textTransform:"uppercase", color:"#4AE6A4", marginBottom:16, fontFamily:"Georgia,serif" }}, "Time"), React.createElement("div", {style: { ...fade(v,0.1), fontSize:36, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", marginBottom:40 }}, "Experiência real.", React.createElement("br", null), React.createElement("span", {style: { color:"#4AE6A4" }}, "Redes que viabilizam.")), React.createElement("div", {style: { display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:24, marginBottom:32 }}, members.map(({ name, role, desc, contact, color }, i) => (
           <div key={i} style={{ ...fade(v, 0.22 + i*0.13), background:"rgba(255,255,255,0.04)", borderRadius:20, padding:"28px 24px", border:`1px solid ${color}25` }}>
             <div style={{ width:44, height:44, borderRadius:"50%", background:`${color}22`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, marginBottom:16 }}>👤</div>
             <div style={{ fontSize:17, fontWeight:800, color:"#fff", fontFamily:"Georgia,serif", marginBottom:4 }}>{name}</div>
@@ -620,73 +376,14 @@ function Team({ active }) {
             <div style={{ fontSize:13, color:"rgba(255,255,255,0.6)", lineHeight:1.65, marginBottom:12 }}>{desc}</div>
             {contact && <div style={{ fontSize:11, color:"rgba(255,255,255,0.3)" }}>{contact}</div>}
           </div>
-        ))}
-      </div>
-      <div style={{ ...fade(v,0.65), background:"rgba(30,170,255,0.06)", borderRadius:16, padding:"20px 28px", border:"1px solid rgba(30,170,255,0.15)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <div>
-          <div style={{ fontSize:15, fontWeight:700, color:"#fff" }}>more.eco.br</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.4)" }}>Plataforma para a Vida · Seed Round 2025</div>
-        </div>
-        <div style={{ display:"flex", gap:32 }}>
-          <div style={{ textAlign:"right" }}>
-            <div style={{ fontSize:12, color:"rgba(255,255,255,0.4)" }}>lucas.formenton@more.eco.br</div>
-            <div style={{ fontSize:12, color:"rgba(255,255,255,0.4)" }}>(11) 97324-2303</div>
-          </div>
-          <div style={{ textAlign:"right" }}>
-            <div style={{ fontSize:12, color:"rgba(255,255,255,0.4)" }}>claudio.costato@more.eco.br</div>
-            <div style={{ fontSize:12, color:"rgba(255,255,255,0.4)" }}>(11) 98333-2328</div>
-          </div>
-        </div>
-      </div>
-    </div>
+        ))), React.createElement("div", {style: { ...fade(v,0.65), background:"rgba(30,170,255,0.06)", borderRadius:16, padding:"20px 28px", border:"1px solid rgba(30,170,255,0.15)", display:"flex", justifyContent:"space-between", alignItems:"center" }}, React.createElement("div", null, React.createElement("div", {style: { fontSize:15, fontWeight:700, color:"#fff" }}, "more.eco.br"), React.createElement("div", {style: { fontSize:13, color:"rgba(255,255,255,0.4)" }}, "Plataforma para a Vida · Seed Round 2025")), React.createElement("div", {style: { display:"flex", gap:32 }}, React.createElement("div", {style: { textAlign:"right" }}, React.createElement("div", {style: { fontSize:12, color:"rgba(255,255,255,0.4)" }}, "lucas.formenton@more.eco.br"), React.createElement("div", {style: { fontSize:12, color:"rgba(255,255,255,0.4)" }}, "(11) 97324-2303")), React.createElement("div", {style: { textAlign:"right" }}, React.createElement("div", {style: { fontSize:12, color:"rgba(255,255,255,0.4)" }}, "claudio.costato@more.eco.br"), React.createElement("div", {style: { fontSize:12, color:"rgba(255,255,255,0.4)" }}, "(11) 98333-2328")))))
   );
 }
 
 function Closing({ active }) {
   const v = useAnimateIn(active);
   return (
-    <div style={{ position:"relative", width:"100%", height:"100%", background:"#040d1a", overflow:"hidden", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
-      {/* Grid */}
-      <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(30,120,220,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(30,120,220,0.06) 1px, transparent 1px)", backgroundSize:"48px 48px" }} />
-      {/* Glow */}
-      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:700, height:700, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.12) 0%, transparent 65%)" }} />
-      <div style={{ position:"relative", zIndex:2, textAlign:"center", maxWidth:760, padding:"0 40px" }}>
-        {/* Quote mark */}
-        <div style={{ ...fade(v,0), fontSize:120, lineHeight:0.8, color:"rgba(30,170,255,0.15)", fontFamily:"Georgia,serif", marginBottom:32 }}>"</div>
-        {/* Quote */}
-        <div style={{ ...fade(v,0.12), fontSize:26, fontWeight:400, fontFamily:"Georgia,serif", color:"rgba(255,255,255,0.88)", lineHeight:1.7, fontStyle:"italic", marginBottom:32 }}>
-          A prosperidade não é o fim da linha.<br/>
-          É o que acontece quando as pessoas têm acesso<br/>
-          ao que precisam para florescer.
-        </div>
-        {/* Attribution */}
-        <div style={{ ...fade(v,0.28), fontSize:13, color:"rgba(255,255,255,0.35)", letterSpacing:"3px", textTransform:"uppercase", marginBottom:64 }}>
-          O Dilema da Prosperidade
-        </div>
-        {/* Divider */}
-        <div style={{ ...fade(v,0.38), width:48, height:2, background:"rgba(30,170,255,0.4)", margin:"0 auto 40px" }} />
-        {/* Logo */}
-        <div style={{ ...fade(v,0.45), marginBottom:20 }}>
-          <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap');`}</style>
-          <span style={{ fontFamily:"'Nunito','Arial Black',sans-serif", fontWeight:900, fontSize:52, color:"#29BAE2", letterSpacing:"-1px" }}>more</span>
-        </div>
-        <div style={{ ...fade(v,0.52), fontSize:13, color:"rgba(255,255,255,0.28)", letterSpacing:"3px", textTransform:"uppercase" }}>
-          Plataforma para a Vida
-        </div>
-        {/* Contacts */}
-        <div style={{ ...fade(v,0.62), marginTop:40, display:"flex", gap:40, justifyContent:"center" }}>
-          <div style={{ textAlign:"center" }}>
-            <div style={{ fontSize:12, color:"rgba(255,255,255,0.5)", fontWeight:600 }}>Lucas Formenton</div>
-            <div style={{ fontSize:11, color:"rgba(255,255,255,0.3)", marginTop:3 }}>lucas.formenton@more.eco.br · (11) 97324-2303</div>
-          </div>
-          <div style={{ width:1, background:"rgba(255,255,255,0.1)" }} />
-          <div style={{ textAlign:"center" }}>
-            <div style={{ fontSize:12, color:"rgba(255,255,255,0.5)", fontWeight:600 }}>Claudio Costato</div>
-            <div style={{ fontSize:11, color:"rgba(255,255,255,0.3)", marginTop:3 }}>claudio.costato@more.eco.br · (11) 98333-2328</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    React.createElement("div", {style: { position:"relative", width:"100%", height:"100%", background:"#040d1a", overflow:"hidden", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}, /* Grid */, React.createElement("div", {style: { position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(30,120,220,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(30,120,220,0.06) 1px, transparent 1px)", backgroundSize:"48px 48px" }}), /* Glow */, React.createElement("div", {style: { position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:700, height:700, borderRadius:"50%", background:"radial-gradient(circle, rgba(30,170,255,0.12) 0%, transparent 65%)" }}), React.createElement("div", {style: { position:"relative", zIndex:2, textAlign:"center", maxWidth:760, padding:"0 40px" }}, /* Quote mark */, React.createElement("div", {style: { ...fade(v,0), fontSize:120, lineHeight:0.8, color:"rgba(30,170,255,0.15)", fontFamily:"Georgia,serif", marginBottom:32 }}, "\""), /* Quote */, React.createElement("div", {style: { ...fade(v,0.12), fontSize:26, fontWeight:400, fontFamily:"Georgia,serif", color:"rgba(255,255,255,0.88)", lineHeight:1.7, fontStyle:"italic", marginBottom:32 }}, "A prosperidade não é o fim da linha.", React.createElement("br", null), "É o que acontece quando as pessoas têm acesso", React.createElement("br", null), "ao que precisam para florescer."), /* Attribution */, React.createElement("div", {style: { ...fade(v,0.28), fontSize:13, color:"rgba(255,255,255,0.35)", letterSpacing:"3px", textTransform:"uppercase", marginBottom:64 }}, "O Dilema da Prosperidade"), /* Divider */, React.createElement("div", {style: { ...fade(v,0.38), width:48, height:2, background:"rgba(30,170,255,0.4)", margin:"0 auto 40px" }}), /* Logo */, React.createElement("div", {style: { ...fade(v,0.45), marginBottom:20 }}, React.createElement("style", null, `@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap');`), React.createElement("span", {style: { fontFamily:"'Nunito','Arial Black',sans-serif", fontWeight:900, fontSize:52, color:"#29BAE2", letterSpacing:"-1px" }}, "more")), React.createElement("div", {style: { ...fade(v,0.52), fontSize:13, color:"rgba(255,255,255,0.28)", letterSpacing:"3px", textTransform:"uppercase" }}, "Plataforma para a Vida"), /* Contacts */, React.createElement("div", {style: { ...fade(v,0.62), marginTop:40, display:"flex", gap:40, justifyContent:"center" }}, React.createElement("div", {style: { textAlign:"center" }}, React.createElement("div", {style: { fontSize:12, color:"rgba(255,255,255,0.5)", fontWeight:600 }}, "Lucas Formenton"), React.createElement("div", {style: { fontSize:11, color:"rgba(255,255,255,0.3)", marginTop:3 }}, "lucas.formenton@more.eco.br · (11) 97324-2303")), React.createElement("div", {style: { width:1, background:"rgba(255,255,255,0.1)" }}), React.createElement("div", {style: { textAlign:"center" }}, React.createElement("div", {style: { fontSize:12, color:"rgba(255,255,255,0.5)", fontWeight:600 }}, "Claudio Costato"), React.createElement("div", {style: { fontSize:11, color:"rgba(255,255,255,0.3)", marginTop:3 }}, "claudio.costato@more.eco.br · (11) 98333-2328")))))
   );
 }
 
@@ -711,51 +408,18 @@ export default function PitchDeck() {
   const SlideComp = slideComponents[slides[current].type];
 
   return (
-    <div style={{ width:"100vw", height:"100vh", background:"#040d1a", display:"flex", flexDirection:"column", overflow:"hidden", fontFamily:"Georgia, serif" }}>
-      {/* Main slide area */}
-      <div style={{ flex:1, position:"relative", overflow:"hidden" }}>
-        <SlideComp active={true} />
-      </div>
-
-      {/* Bottom navigation */}
-      <div style={{ background:"rgba(4,13,26,0.95)", borderTop:"1px solid rgba(255,255,255,0.06)", padding:"12px 24px", display:"flex", alignItems:"center", gap:16 }}>
-        {/* Prev */}
-        <button onClick={() => setCurrent(c => Math.max(c-1,0))} disabled={current===0}
-          style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color: current===0 ? "rgba(255,255,255,0.2)" : "#fff", borderRadius:8, padding:"6px 14px", cursor: current===0 ? "default" : "pointer", fontSize:16, transition:"all 0.2s" }}>
-          ‹
-        </button>
-
-        {/* Dot indicators */}
-        <div style={{ display:"flex", gap:6, flex:1, justifyContent:"center" }}>
-          {slides.map((_, i) => (
+    React.createElement("div", {style: { width:"100vw", height:"100vh", background:"#040d1a", display:"flex", flexDirection:"column", overflow:"hidden", fontFamily:"Georgia, serif" }}, /* Main slide area */, React.createElement("div", {style: { flex:1, position:"relative", overflow:"hidden" }}, React.createElement(SlideComp, {active: true})), /* Bottom navigation */, React.createElement("div", {style: { background:"rgba(4,13,26,0.95)", borderTop:"1px solid rgba(255,255,255,0.06)", padding:"12px 24px", display:"flex", alignItems:"center", gap:16 }}, /* Prev */, React.createElement("button", {onClick: () => setCurrent(c => Math.max(c-1,0)), disabled: current===0, style: { background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color: current===0 ? "rgba(255,255,255,0.2)" : "#fff", borderRadius:8, padding:"6px 14px", cursor: current===0 ? "default" : "pointer", fontSize:16, transition:"all 0.2s" }}, "‹"), /* Dot indicators */, React.createElement("div", {style: { display:"flex", gap:6, flex:1, justifyContent:"center" }}, slides.map((_, i) => (
             <button key={i} onClick={() => setCurrent(i)}
               title={slideNames[i]}
               style={{ width: i===current ? 24 : 8, height:8, borderRadius:4, background: i===current ? "#1EAAFF" : "rgba(255,255,255,0.2)", border:"none", cursor:"pointer", transition:"all 0.3s ease", padding:0 }} />
-          ))}
-        </div>
-
-        {/* Slide name + count */}
-        <div style={{ fontSize:12, color:"rgba(255,255,255,0.35)", minWidth:120, textAlign:"center", letterSpacing:"1px" }}>
-          {slideNames[current]} · {current+1}/{slides.length}
-        </div>
-
-        {/* Next */}
-        <button onClick={() => setCurrent(c => Math.min(c+1, slides.length-1))} disabled={current===slides.length-1}
-          style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color: current===slides.length-1 ? "rgba(255,255,255,0.2)" : "#fff", borderRadius:8, padding:"6px 14px", cursor: current===slides.length-1 ? "default" : "pointer", fontSize:16, transition:"all 0.2s" }}>
-          ›
-        </button>
-      </div>
-
-      {/* Keyboard hint */}
-      <div style={{ position:"absolute", top:16, right:20, fontSize:11, color:"rgba(255,255,255,0.18)", letterSpacing:"1px" }}>
-        ← → para navegar
-      </div>
-    </div>
+          ))), /* Slide name + count */, React.createElement("div", {style: { fontSize:12, color:"rgba(255,255,255,0.35)", minWidth:120, textAlign:"center", letterSpacing:"1px" }}, slideNames[current], "·", current+1, "/", slides.length), /* Next */, React.createElement("button", {onClick: () => setCurrent(c => Math.min(c+1, slides.length-1)), disabled: current===slides.length-1, style: { background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color: current===slides.length-1 ? "rgba(255,255,255,0.2)" : "#fff", borderRadius:8, padding:"6px 14px", cursor: current===slides.length-1 ? "default" : "pointer", fontSize:16, transition:"all 0.2s" }}, "›")), /* Keyboard hint */, React.createElement("div", {style: { position:"absolute", top:16, right:20, fontSize:11, color:"rgba(255,255,255,0.18)", letterSpacing:"1px" }}, "← → para navegar"))
   );
 }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(React.createElement(PitchDeck));
-  </script>
+const _root = ReactDOM.createRoot(document.getElementById('root'));
+_root.render(React.createElement(PitchDeck));
+document.getElementById('loader').classList.add('fade');
+setTimeout(() => { const l = document.getElementById('loader'); if(l) l.remove(); }, 600);
+</script>
 </body>
 </html>
